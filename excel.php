@@ -1,6 +1,7 @@
 <?php
 ini_set("log_errors", 1);
-ini_set("error_log", "/tmp/php.log");
+ini_set("error_liog", "php.log");
+#print_r($_POST['tagstags']);
 # Set user_id via GET
 try {
 # Set database path
@@ -44,21 +45,30 @@ $db1 = new PDO('sqlite:/var/www/html/kanboard/data/db.sqlite');
             ->setCellValue('B1', 'Project General Information')
             ->setCellValue('B3', 'Project')
             ->setCellValue('C3', 'Progress')
-            ->setCellValue('D3', 'Comments');
+            ->setCellValue('D3', 'Semaphore')
+            ->setCellValue('E3', 'Comments');
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setName('Century Goth');
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setSize(30);
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setBold(true);
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLUE);
+	$objPHPExcel->getActiveSheet()->getStyle('B3')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('C3')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('D3')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E3')->getFont()->setBold(true);
 	$objPHPExcel->createSheet();
 	$objPHPExcel->setActiveSheetIndex(1);
 	$objPHPExcel->getActiveSheet()->getRowDimension('1')->setRowHeight(40);
 	$objPHPExcel->setActiveSheetIndex(1)
-           ->setCellValue('B1', 'Tasks Details');
+           ->setCellValue('B1', 'Tasks Details')
+           ->setCellValue('G3', 'Tags')
+           ->setCellValue('F3', 'Last Comment');
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setName('Century Goth');
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setSize(30);
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setBold(true);
 	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_BLUE);
 	$objPHPExcel->getActiveSheet()->setTitle('Tasks Details');
+	$objPHPExcel->getActiveSheet()->getStyle('G3')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('F3')->getFont()->setBold(true);
 	$header=array("");
 	$rows=array("");
 	$rownumber=4;
@@ -92,8 +102,26 @@ $db1 = new PDO('sqlite:/var/www/html/kanboard/data/db.sqlite');
         	}
 		$sql1='SELECT comment FROM "comments" WHERE task_id = '.$row["id"].' ORDER BY ID DESC LIMIT 1';
 		$comment = $db1->query($sql1);
+		if ($comment === FALSE ) {
+			array_push($rows," ");
+		}
+		$are_comments=0;
 		foreach($comment as $commentary) {
 			 array_push($rows,$commentary["comment"]);
+			$are_comments=1;
+		}
+		if ( $are_comments == 0 ) {
+			 array_push($rows," ");
+		}
+		$sql2='SELECT name FROM tags WHERE id IN (select tag_id from task_has_tags where task_id = '.$row["id"].')';
+		$all_tasks_tags = $db1->query($sql2);
+		$are_tasks_tags=0;
+		foreach($all_tasks_tags as $tasks_tags) {
+			 array_push($rows,$tasks_tags["name"]);
+			 $are_tasks_tags=1;
+		}
+		if ( $are_tasks_tags == 0 ) {
+			 array_push($rows," ");
 		}
 		$objPHPExcel->getActiveSheet()->fromArray($rows, null, 'A'.$rownumber);	
 		$rows=array("");
@@ -111,6 +139,19 @@ $db1 = new PDO('sqlite:/var/www/html/kanboard/data/db.sqlite');
 				$percentaje=($fila["count"]*100)/$row["count"];
 				$objPHPExcel->getActiveSheet()
 	        		    ->setCellValue('C'.$rownumber, $percentaje);
+				switch (true) {
+					case ($percentaje < 25):
+					$objPHPExcel->getActiveSheet()->getStyle('D'.$rownumber)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('F93939');
+					break;
+					case ($percentaje < 50):
+					$objPHPExcel->getActiveSheet()->getStyle('D'.$rownumber)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FFFF99');
+					break;
+					case ($percentaje < 75):
+					$objPHPExcel->getActiveSheet()->getStyle('D'.$rownumber)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('FF9933');
+					break;
+					default:
+					$objPHPExcel->getActiveSheet()->getStyle('D'.$rownumber)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('00CC66');
+				}
 			}
 		}
 		$rows=array("");

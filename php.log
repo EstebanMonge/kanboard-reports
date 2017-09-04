@@ -1,0 +1,10 @@
+[04-Sep-2017 04:38:25 UTC] PHP Notice:  Undefined index: clients in /var/www/html/kanboard-reports/excel.php on line 7
+[04-Sep-2017 04:38:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /var/www/html/kanboard-reports/excel.php on line 9
+[04-Sep-2017 04:38:29 UTC] PHP Notice:  Undefined index: clients in /var/www/html/kanboard-reports/excel.php on line 7
+[04-Sep-2017 04:38:29 UTC] PHP Warning:  Invalid argument supplied for foreach() in /var/www/html/kanboard-reports/excel.php on line 9
+[04-Sep-2017 04:39:43 UTC] PHP Notice:  Undefined index: clients in /var/www/html/kanboard-reports/excel.php on line 7
+[04-Sep-2017 04:39:43 UTC] PHP Warning:  Invalid argument supplied for foreach() in /var/www/html/kanboard-reports/excel.php on line 9
+[04-Sep-2017 04:39:59 UTC] PHP Notice:  Undefined index: clients in /var/www/html/kanboard-reports/excel.php on line 7
+[04-Sep-2017 04:39:59 UTC] PHP Warning:  Invalid argument supplied for foreach() in /var/www/html/kanboard-reports/excel.php on line 9
+[04-Sep-2017 04:40:46 UTC] PHP Notice:  Undefined index: clients in /var/www/html/kanboard-reports/excel.php on line 7
+[04-Sep-2017 04:40:46 UTC] PHP Warning:  Invalid argument supplied for foreach() in /var/www/html/kanboard-reports/excel.php on line 9
